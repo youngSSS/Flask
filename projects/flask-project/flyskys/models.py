@@ -1,4 +1,4 @@
-from pybo import db
+from flyskys import db
 
 
 class Question(db.Model):
