@@ -1,3 +1,4 @@
 .idea/
 __pycache__/
 venvs/
+.vscode/settings.json
