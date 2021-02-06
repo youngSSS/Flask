@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template
-from flyskys.models import Question
+from flask import Blueprint, url_for
+from werkzeug.utils import redirect
 
 # Blueprint 객체 생성
 bp = Blueprint("main", __name__, url_prefix="/")
@@ -12,11 +12,8 @@ def hello_flyskys():
 
 @bp.route("/")
 def index():
-    question_list = Question.query.order_by(Question.create_date.desc())
-    return render_template("question/question_list.html", question_list=question_list)
-
-
-@bp.route("/detail/<int:question_id>/")
-def detail(question_id):
-    question = Question.query.get(question_id)
-    return render_template("question/question_detail.html", question=question)
+    # redirect 함수는 입력 받은 URL으로 redirect 하고,
+    # url_for 함수는 라우트가 설정된 함수명으로 URL을 역으로 찾아 준다
+    # url_for의 question은 등록된 Blueprint 이름,
+    # _list는 Blueprint에 등록된 함수명이라고 생각하자
+    return redirect(url_for("question._list"))
