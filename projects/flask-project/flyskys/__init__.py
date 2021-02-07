@@ -20,10 +20,11 @@ def create_app():
     from . import models
 
     # Blueprint
-    from .views import main_views, question_views
+    from .views import main_views, question_views, answer_views
 
     # Register Blueprint
     app.register_blueprint(main_views.bp)
     app.register_blueprint(question_views.bp)
+    app.register_blueprint(answer_views.bp)
 
     return app
