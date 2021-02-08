@@ -2,3 +2,4 @@
 __pycache__/
 venvs/
 .vscode/settings.json
+bootstrap-5.0.0-beta1-dist/
