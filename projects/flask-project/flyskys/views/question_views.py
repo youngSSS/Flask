@@ -30,10 +30,12 @@ def detail(question_id):
 @bp.route('/create/', methods=('GET', 'POST'))
 def create():
     form = QuestionForm()
+    # CASE: 질문 최종 등록 (최종 등록은 POST 형식으로 전송된다)
     if request.method == 'POST' and form.validate_on_submit():
         question = Question(subject=form.subject.data,
                             content=form.content.data, create_date=datetime.now())
         db.session.add(question)
         db.session.commit()
         return redirect(url_for('main.index'))
+    # CASE: 질문 리스트에서 질문 등록 버튼 클릭
     return render_template('question/question_form.html', form=form)
