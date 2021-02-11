@@ -11,7 +11,11 @@ bp = Blueprint("question", __name__, url_prefix="/question")
 
 @bp.route("/list/")
 def _list():
+    # GET 방식으로 요청한 아래와 같은 URL에서 page 값 5를 가져올 때 사용
+    # localhost:5000/question/list/?page=5
+    page = request.args.get('page', type=int, default=1)
     question_list = Question.query.order_by(Question.create_date.desc())
+    question_list = question_list.paginate(page, per_page=10)
     return render_template("question/question_list.html", question_list=question_list)
 
 

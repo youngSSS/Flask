@@ -7,7 +7,9 @@
         {{ question.content }}
       </div>
       <div class="d-flex justify-content-end">
-        <div class="badge badge-light p-2">{{ question.create_date }}</div>
+        <div class="badge badge-black p-2">
+          {{ question.create_date | datetime }}
+        </div>
       </div>
     </div>
   </div>
@@ -21,7 +23,9 @@
         {{ answer.content }}
       </div>
       <div class="d-flex justify-content-end">
-        <div class="badge badge-light p-2">{{ answer.create_date }}</div>
+        <div class="badge badge-light p-2">
+          {{ answer.create_date | datetime }}
+        </div>
       </div>
     </div>
   </div>
