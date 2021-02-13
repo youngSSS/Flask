@@ -17,8 +17,13 @@
         </td>
         <td>
           <a href="{{ url_for('question.detail', question_id=question.id) }}"
-            >{{ question.subject }}</a
-          >
+            >{{ question.subject }}
+          </a>
+          {% if question.answer_set|length > 0 %}
+          <span class="text-danger small ml-2"
+            >{{ question.answer_set|length }}
+          </span>
+          {% endif %}
         </td>
         <td>{{ question.create_date | datetime }}</td>
       </tr>

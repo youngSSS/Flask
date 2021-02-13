@@ -30,6 +30,8 @@
     </div>
   </div>
   {% endfor %}
+  <!-- 답변등록 시 answer.create로 전송 -->
+  <!-- POST 사용 -->
   <form
     action="{{ url_for('answer.create', question_id=question.id) }}"
     method="post"
