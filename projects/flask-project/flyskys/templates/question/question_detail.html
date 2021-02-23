@@ -19,6 +19,13 @@
           class="btn btn-sm btn-outline-secondary"
           >수정</a
         >
+        <!-- jQuery에서 $(this).data('uri')로 삭제를 실행하는 URL을 얻기위해 data-uri 속성 추가 -->
+        <a
+          href="#"
+          class="delete btn btn-sm btn-outline-secondary"
+          data-uri="{{ url_for('question.delete', question_id=question.id) }}"
+          >삭제</a
+        >
       </div>
       {% endif %}
     </div>
@@ -74,4 +81,14 @@
     <input type="submit" value="답변등록" class="btn btn-primary" />
   </form>
 </div>
+{% endblock %} {% block script %}
+<script type="text/javascript">
+  $(document).ready(function () {
+    $(".delete").on("click", function () {
+      if (confirm("정말로 삭제하시겠습니까?")) {
+        location.href = $(this).data("uri");
+      }
+    });
+  });
+</script>
 {% endblock %}

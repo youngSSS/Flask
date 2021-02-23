@@ -69,3 +69,15 @@ def modify(question_id):
     # QuestionForm(obj=question)과 같이 조회한 데이터를 obj 매개변수에 전달하여
     # question_form을 띄우면 해당 질문의 기존 내용을 포함한 상태로 질문등록에 들어갈 수 있다
     return render_template('question/question_form.html', form=form)
+
+
+@bp.route('/delete/<int:question_id>')
+@login_required
+def delete(question_id):
+    question = Question.query.get_or_404(question_id)
+    if g.user != question.user:
+        flash('삭제권한이 없습니다')
+        return redirect(url_for('question.detail', question_id=question_id))
+    db.session.delete(question)
+    db.session.commit()
+    return redirect(url_for('question._list'))
