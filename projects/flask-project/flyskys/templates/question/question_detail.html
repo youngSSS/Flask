@@ -12,6 +12,15 @@
           <div>{{ question.create_date|datetime }}</div>
         </div>
       </div>
+      {% if g.user == question.user %}
+      <div class="my-3">
+        <a
+          href="{{ url_for('question.modify', question_id=question.id) }}"
+          class="btn btn-sm btn-outline-secondary"
+          >수정</a
+        >
+      </div>
+      {% endif %}
     </div>
   </div>
   <h5 class="border-bottom my-3 py-2">

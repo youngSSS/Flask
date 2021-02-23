@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Blueprint, render_template, request, url_for, g
+from flask import Blueprint, render_template, request, url_for, g, flash
 from werkzeug.utils import redirect
 from .. import db
 from ..models import Question
@@ -40,4 +40,32 @@ def create():
         db.session.commit()
         return redirect(url_for('main.index'))
     # CASE: 질문 리스트에서 질문 등록 버튼 클릭
+    return render_template('question/question_form.html', form=form)
+
+
+@bp.route('/modify/<int:question_id>', methods=('GET', 'POST'))
+@login_required
+def modify(question_id):
+    question = Question.query.get_or_404(question_id)
+    if g.user != question.user:
+        flash('수정권한이 없습니다')
+        return redirect(url_for('question.detail', question_id=question_id))
+
+    # CASE: 질문수정을 마치고 저장을 누른 경우
+    # validate_on_submit에서 QuestionForm을 검증한 뒤 이상이 없으면 변경된 데이터를 저장
+    # 변경된 데이터를 적용하기 위해 form.populate_obj(question)을 이용해 form 변수에 들어 있는
+    # 데이터를 question 객체에 적용한다
+    if request.method == 'POST':
+        form = QuestionForm()
+        if form.validate_on_submit():
+            form.populate_obj(question)
+            question.modify_date = datetime.now()
+            db.session.commit()
+            return redirect(url_for('question.detail', question_id=question_id))
+    else:
+        form = QuestionForm(obj=question)
+
+    # CASE: 질문수정 버튼을 누른 경우
+    # QuestionForm(obj=question)과 같이 조회한 데이터를 obj 매개변수에 전달하여
+    # question_form을 띄우면 해당 질문의 기존 내용을 포함한 상태로 질문등록에 들어갈 수 있다
     return render_template('question/question_form.html', form=form)
