@@ -6,6 +6,7 @@ from flyskys import db
 from flyskys.forms import UserCreateForm, UserLoginForm
 from flyskys.models import User
 
+import functools
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -68,3 +69,16 @@ def load_logged_in_user():
 def logout():
     session.clear()
     return redirect(url_for('main.index'))
+
+
+# decorator function
+# 아래와 같이 decorator 함수를 생성하여 @login_required 애터테이션을 사요할 수 있다
+# @login_required 애너테이션을 사용하면 데코레이터 함수가 먼저 실행되고
+# 해당 데코레이터 함수는 g.user 유무를 조사하여 없으면 로그인 URL로 redirect 있으면 원래 함수를 그대로 실행한다
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+        return view(**kwargs)
+    return wrapped_view

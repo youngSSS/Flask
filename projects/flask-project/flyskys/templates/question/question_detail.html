@@ -47,6 +47,13 @@
     <!-- 오류표시 End -->
     <div class="form-group">
       <textarea
+        {%
+        if
+        not
+        g.user
+        %}disabled{%
+        endif
+        %}
         name="content"
         id="content"
         class="form-control"
