@@ -49,3 +49,18 @@ def modify(answer_id):
         form = AnswerForm(obj=answer)
 
     return render_template('answer/answer_form.html', answer=answer, form=form)
+
+
+@bp.route('/delete/<int:answer_id>')
+@login_required
+def delete(answer_id):
+    answer = Answer.query.get_or_404(answer_id)
+    question_id = answer.question.id
+
+    if g.user != answer.user:
+        flash('삭제권한이 없습니다')
+    else:
+        db.session.delete(answer)
+        db.session.commit()
+
+    return redirect(url_for('question.detail', question_id=question_id))

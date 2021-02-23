@@ -7,6 +7,12 @@
         {{ question.content }}
       </div>
       <div class="d-flex justify-content-end">
+        {% if question.modify_date %}
+        <div class="p-2 text-left mx-3">
+          <div class="mb-2">modified at</div>
+          <div>{{ question.modify_date|datetime }}</div>
+        </div>
+        {% endif %}
         <div class="p-2 text-left">
           <div class="mb-2">{{ question.user.username }}</div>
           <div>{{ question.create_date|datetime }}</div>
@@ -40,6 +46,12 @@
         {{ answer.content }}
       </div>
       <div class="d-flex justify-content-end">
+        {% if answer.modify_date %}
+        <div class="p-2 text-left mx-3">
+          <div class="mb-2">modified at</div>
+          <div>{{ answer.modify_date|datetime }}</div>
+        </div>
+        {% endif %}
         <div class="p-2 text-left">
           <div class="mb-2">{{ answer.user.username }}</div>
           <div>{{ answer.create_date|datetime }}</div>
@@ -51,6 +63,12 @@
           href="{{ url_for('answer.modify', answer_id=answer.id) }}"
           class="btn btn-sm btn-outline-secondary"
           >수정</a
+        >
+        <a
+          href="#"
+          class="delete btn btn-sm btn-outline-secondary"
+          data-uri="{{ url_for('answer.delete', answer_id=answer.id) }}"
+          >삭제</a
         >
       </div>
       {% endif %}
