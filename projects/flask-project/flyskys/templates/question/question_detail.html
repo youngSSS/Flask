@@ -45,6 +45,15 @@
           <div>{{ answer.create_date|datetime }}</div>
         </div>
       </div>
+      {% if g.user == answer.user %}
+      <div class="my-3">
+        <a
+          href="{{ url_for('answer.modify', answer_id=answer.id) }}"
+          class="btn btn-sm btn-outline-secondary"
+          >수정</a
+        >
+      </div>
+      {% endif %}
     </div>
   </div>
   {% endfor %}
