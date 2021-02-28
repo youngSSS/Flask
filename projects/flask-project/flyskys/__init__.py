@@ -31,7 +31,7 @@ def create_app():
     from . import models
 
     # Blueprint
-    from .views import main_views, question_views, answer_views, auth_views, comment_views
+    from .views import main_views, question_views, answer_views, auth_views, comment_views, vote_views
 
     # Register Blueprint
     app.register_blueprint(main_views.bp)
@@ -39,6 +39,7 @@ def create_app():
     app.register_blueprint(answer_views.bp)
     app.register_blueprint(auth_views.bp)
     app.register_blueprint(comment_views.bp)
+    app.register_blueprint(vote_views.bp)
 
     # Filter
     from .filter import format_datetime

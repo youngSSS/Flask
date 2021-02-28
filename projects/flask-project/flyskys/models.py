@@ -1,8 +1,26 @@
 from flyskys import db
 
+# ManyToMany relationship table object
+question_voter = db.Table(
+    'question_voter',
+    db.Column('user_id', db.Integer, db.ForeignKey(
+        'user.id', ondelete='CASCADE'), primary_key=True),
+    db.Column('question_id', db.Integer, db.ForeignKey(
+        'question.id', ondelete='CASCADE'), primary_key=True)
+)
+
+answer_voter = db.Table(
+    'answer_voter',
+    db.Column('user_id', db.Integer, db.ForeignKey(
+        'user.id', ondelete='CASCADE'), primary_key=True),
+    db.Column('answer_id', db.Integer, db.ForeignKey(
+        'answer.id', ondelete='CASCADE'), primary_key=True)
+)
+
 
 # nullable=False: 해당 값을 null로 설정할 수 없다
 # unique=True: 같은 모델 데이터의 값이 중복될 수 없다
+
 
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -13,6 +31,9 @@ class Question(db.Model):
         'user.id', ondelete='CASCADE'), nullable=False)
     user = db.relationship('User', backref=db.backref('question_set'))
     modify_date = db.Column(db.DateTime(), nullable=True)
+    # secondary 설정은 voter가 다대다 관계며, question_voter 테이블을 참조한다는 사실을 알려준다
+    voter = db.relationship('User', secondary=question_voter,
+                            backref=db.backref('question_voter_set'))
 
 
 class Answer(db.Model):
@@ -27,6 +48,8 @@ class Answer(db.Model):
         'user.id', ondelete='CASCADE'), nullable=False)
     user = db.relationship('User', backref=db.backref('answer_set'))
     modify_date = db.Column(db.DateTime(), nullable=True)
+    voter = db.relationship('User', secondary=answer_voter,
+                            backref=db.backref('answer_voter_set'))
 
 
 class User(db.Model):

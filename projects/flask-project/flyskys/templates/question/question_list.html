@@ -4,6 +4,7 @@
     <thead>
       <tr class="text-center thead-dark">
         <th>번호</th>
+        <th>추천</th>
         <th style="width: 50%">제목</th>
         <th>글쓴이</th>
         <th>작성일시</th>
@@ -15,6 +16,11 @@
         <td>
           {{ question_list.total - ((question_list.page - 1) *
           question_list.per_page) - loop.index0 }}
+        </td>
+        <td>
+          {% if question.voter|length > 0 %}
+          <span class="">{{ question.voter|length }}</span>
+          {% endif %}
         </td>
         <td class="text-left">
           <a href="{{ url_for('question.detail', question_id=question.id) }}"
