@@ -1,6 +1,7 @@
 from flask import Blueprint, url_for, render_template, flash, request, session, g
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import redirect
+from sqlalchemy.exc import IntegrityError
 
 from flyskys import db
 from flyskys.forms import UserCreateForm, UserLoginForm
@@ -22,9 +23,15 @@ def signup():
             user = User(username=form.username.data,
                         password=generate_password_hash(form.password1.data),
                         email=form.email.data)
-            db.session.add(user)
-            db.session.commit()
-            return redirect(url_for('main.index'))
+            try:
+                db.session.add(user)
+                db.session.commit()
+                return redirect(url_for('main.index'))
+
+            except IntegrityError:
+                db.session.rollback()
+                flash('이미 등록된 이메일입니다')
+
         else:
             flash('이미 존재하는 사용자입니다')
 
