@@ -1,10 +1,12 @@
 from datetime import datetime
 from flask import Blueprint, render_template, request, url_for, g, flash
 from werkzeug.utils import redirect
+from sqlalchemy import func
 from .. import db
 from ..models import Question
 from ..forms import QuestionForm, AnswerForm
 from .auth_views import login_required
+from ..models import Question, Answer, User, question_voter
 
 # Blueprint 객체 생성
 bp = Blueprint("question", __name__, url_prefix="/question")
@@ -14,10 +16,49 @@ bp = Blueprint("question", __name__, url_prefix="/question")
 def _list():
     # GET 방식으로 요청한 아래와 같은 URL에서 page 값 5를 가져올 때 사용
     # localhost:5000/question/list/?page=5
+
+    # Input params
     page = request.args.get('page', type=int, default=1)
-    question_list = Question.query.order_by(Question.create_date.desc())
+    kw = request.args.get('kw', type=str, default="")
+    so = request.args.get('so', type=str, default="recent")
+
+    # Sort
+    if so == 'recommend':
+        sub_query = db.session.query(question_voter.c.question_id, func.count('*').label('num_voter')) \
+            .group_by(question_voter.c.question_id).subquery()
+        question_list = Question.query \
+            .outerjoin((sub_query, Question.id == sub_query.c.question_id)) \
+            .order_by(sub_query.c.num_voter.desc(), Question.create_date.desc())
+
+    elif so == 'popular':
+        sub_query = db.session.query(Answer.question_id, func.count('*').label('num_answer')) \
+            .group_by(Answer.question_id).subquery()
+        question_list = Question.query \
+            .outerjoin((sub_query, Question.id == sub_query.c.question_id)) \
+            .order_by(sub_query.c.num_answer.desc(), Question.create_date.desc())
+
+    else:  # recent
+        question_list = Question.query.order_by(Question.create_date.desc())
+
+    # Search
+    if kw:
+        search = '%%{}%%'.format(kw)
+        sub_query = db.session.query(Answer.question_id, Answer.content, User.username) \
+            .join(User, Answer.user_id == User.id).subquery()
+        question_list = question_list \
+            .join(User) \
+            .outerjoin(sub_query, sub_query.c.question_id == Question.id) \
+            .filter(Question.subject.ilike(search) |
+                    Question.content.ilike(search) |
+                    User.username.ilike(search) |
+                    sub_query.c.content.ilike(search) |
+                    sub_query.c.username.ilike(search)
+                    )\
+            .distinct()
+
+    # Pagination
     question_list = question_list.paginate(page, per_page=10)
-    return render_template("question/question_list.html", question_list=question_list)
+    return render_template("question/question_list.html", question_list=question_list, page=page, kw=kw, so=so)
 
 
 @bp.route("/detail/<int:question_id>/")

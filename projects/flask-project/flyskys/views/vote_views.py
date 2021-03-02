@@ -25,7 +25,7 @@ def question(question_id):
 
 @bp.route('/answer/<int:answer_id>/')
 @login_required
-def answer(answre_id):
+def answer(answer_id):
     _answer = Answer.query.get_or_404(answer_id)
 
     if g.user == _answer.user:
