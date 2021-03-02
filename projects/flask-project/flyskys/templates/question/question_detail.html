@@ -21,9 +21,7 @@
       <div class="card">
         <div class="card">
           <div class="card-body">
-            <div class="card-text" style="white-space: pre-line">
-              {{ question.content }}
-            </div>
+            <div class="card-text">{{ question.content | markdown }}</div>
             <div class="d-flex justify-content-end">
               {% if question.modify_date %}
               <div class="p-2 text-left mx-3">
@@ -113,9 +111,7 @@
       <div class="col-11">
         <div class="card">
           <div class="card-body">
-            <div class="card-text" style="white-space: pre-line">
-              {{ answer.content }}
-            </div>
+            <div class="card-text">{{ answer.content | markdown }}</div>
             <div class="d-flex justify-content-end">
               {% if answer.modify_date %}
               <div class="p-2 text-left mx-3">
